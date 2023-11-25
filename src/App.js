@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NavBar from "./component/navbar/NavBar";
+import ListRecette from "./component/recette/ListRecette";
+import UpdateRecette from "./component/recette/UpdateRecette";
+import Login from "./component/auth/Login";
+// import SignUp from "./component/auth/SignUp";
+import { AuthProvider, useAuth } from "./component/context/AuthContext";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const { isAuthenticated, isUser } = useAuth();
+
+    return (
+        <div className="App">
+            <NavBar isAuthenticated={isAuthenticated} isUser={isUser} />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Login/>}/>
+                    <Route path="/recette" element={<ListRecette isAuthenticated={isAuthenticated} isUser={isUser} />} />
+                    <Route path="/recette/update" element={<UpdateRecette isAuthenticated={isAuthenticated} isUser={isUser} />} />
+                    <Route path="/login" element={<Login />} />
+                    {/*<Route path="/signup" element={<SignUp />} />*/}
+                </Routes>
+            </BrowserRouter>
+        </div>
+    );
 }
 
-export default App;
+export default () => (
+    <AuthProvider>
+        <App />
+    </AuthProvider>
+);
